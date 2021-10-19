@@ -98,3 +98,50 @@ dynamite_df <-
   )
 ```
 
+
+## Try some APIs
+
+Get some data from an API about water.
+
+```{r}
+water_df <- 
+  GET("https://data.cityofnewyork.us/resource/ia2d-e54m.csv") %>% 
+  content()
+```
+
+
+Let's see what JSON looks like ...
+
+```{r}
+water_df <- 
+  GET("https://data.cityofnewyork.us/resource/ia2d-e54m.json") %>% 
+  content("text") %>% 
+  jsonlite::fromJSON() %>% 
+  as_tibble()
+```
+
+
+BRFSS data via API
+
+```{r}
+brfss_df <- 
+  GET("https://chronicdata.cdc.gov/resource/acme-vg9e.csv",
+      # Get 5000 rows instead of 1000 rows
+      query = list("$limit" = 5000)) %>% 
+  content()
+```
+
+
+What about pokemon API ...
+
+```{r}
+poke_data <- 
+  GET("https://pokeapi.co/api/v2/pokemon/1") %>% 
+  content()
+
+poke_data[["name"]]
+poke_data[["height"]]
+poke_data[["abilities"]]
+```
+
+
