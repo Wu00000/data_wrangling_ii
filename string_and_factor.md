@@ -28,6 +28,8 @@ library(rvest)
     ##     guess_encoding
 
 ``` r
+library(p8105.datasets)
+
 knitr::opts_chunk$set(
   fig.width = 6,
   fig.asp = .6,
@@ -199,3 +201,60 @@ marj_df %>%
 ```
 
 <img src="string_and_factor_files/figure-gfm/unnamed-chunk-13-1.png" width="90%" />
+
+## Restaurant Inspections
+
+``` r
+data("rest_inspec")
+```
+
+``` r
+rest_inspec <- 
+  rest_inspec %>% 
+  filter(
+    str_detect(grade, "[ABC]"),
+    !(boro == "Missing")
+  ) %>% 
+  mutate(
+    boro = str_to_title(boro)
+  )
+```
+
+``` r
+rest_inspec %>% 
+  janitor::tabyl(boro, grade)
+```
+
+    ##           boro     A     B    C
+    ##          Bronx 13688  2801  701
+    ##       Brooklyn 37449  6651 1684
+    ##      Manhattan 61608 10532 2689
+    ##         Queens 35952  6492 1593
+    ##  Staten Island  5215   933  207
+
+``` r
+rest_inspec %>% 
+  filter(str_detect(dba, "[Pp][Ii][Zz][Zz][Aa]")) %>% 
+  mutate(
+    boro = fct_infreq(boro)
+  ) %>% 
+  ggplot(aes(x = boro, fill = grade)) + 
+  geom_bar()
+```
+
+<img src="string_and_factor_files/figure-gfm/unnamed-chunk-17-1.png" width="90%" />
+
+What about changing a label …
+
+``` r
+rest_inspec %>% 
+  filter(str_detect(dba, "[Pp][Ii][Zz][Zz][Aa]")) %>% 
+  mutate(
+    boro = fct_infreq(boro),
+    boro = fct_recode(boro, "The City" = "Manhattan")
+  ) %>% 
+  ggplot(aes(x = boro, fill = grade)) + 
+  geom_bar()
+```
+
+<img src="string_and_factor_files/figure-gfm/unnamed-chunk-18-1.png" width="90%" />
